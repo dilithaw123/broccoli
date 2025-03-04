@@ -203,10 +203,12 @@ func (s *Server) handleIsAuthorized() http.HandlerFunc {
 // If user's email exists in map with matching refresh token, send a new access token
 func (s *Server) handleNewAccessToken() http.HandlerFunc {
 	type request struct {
-		Email string `json:"email"`
+		Email        string `json:"email"`
+		RefreshToken string `json:"refresh_token"`
 	}
 	type response struct {
-		AccessToken string `json:"access_token"`
+		AccessToken  string `json:"access_token"`
+		RefreshToken string `json:"refresh_token"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req request
@@ -215,16 +217,15 @@ func (s *Server) handleNewAccessToken() http.HandlerFunc {
 			return
 		}
 		req.Email = strings.ToLower(req.Email)
-		refreshToken, err := r.Cookie("refresh_token")
-		if err != nil || refreshToken.Value == "" {
+		if val, ok := s.refTokenMap[req.Email]; !ok || req.RefreshToken != val {
 			http.Error(w, "forbidden", http.StatusForbidden)
 			return
 		}
-		if val, ok := s.refTokenMap[req.Email]; !ok || refreshToken.Value != val {
-			http.Error(w, "forbidden", http.StatusForbidden)
-			return
+		resp := response{
+			AccessToken:  GenerateAccessToken(req.Email, s.secretKey) + "new",
+			RefreshToken: GenerateRefreshToken(),
 		}
-		resp := response{AccessToken: GenerateAccessToken(req.Email, s.secretKey)}
+		s.refTokenMap[req.Email] = resp.RefreshToken // TODO: mutex
 		if err := json.NewEncoder(w).Encode(resp); err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 		}
