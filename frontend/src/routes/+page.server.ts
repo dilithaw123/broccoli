@@ -8,7 +8,7 @@ export async function load(event: RequestEvent) {
 	}
 	const userCookie = event.cookies.get('user');
 	const userObj = userCookie ? JSON.parse(userCookie) : null;
-	const resp = await fetch(env.API_URL + `/groups/user${userObj.email}`, {
+	const resp = await fetch(env.API_URL + `/groups/user/${userObj.email}`, {
 		headers: {
 			Authorization: `Bearer ${accessToken}`
 		}

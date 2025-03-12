@@ -8,7 +8,8 @@ export const actions = {
 		const resp = await fetch(env.API_URL + '/login', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'X-API-KEY': env.API_KEY ?? ''
 			},
 			body: JSON.stringify(Object.fromEntries(data))
 		});

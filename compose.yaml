@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16.3-alpine
+    image: postgres:17.4-alpine
     expose:
       - "5432"
     # ports:
@@ -18,7 +18,7 @@ services:
     environment:
       - DB_DRIVER=postgres
     volumes:
-      - ./backend/migrations:/migrations
+      - ./migrations:/migrations
     depends_on:
       - db
     networks:
@@ -26,7 +26,7 @@ services:
     command: ["--path", "/migrations", "--database", "postgres://postgres:${POSTGRES_PASSWORD}@db:5432/broccoli?sslmode=disable", "up"]
   backend:
     build:
-      dockerfile: ./backend/dockerfile
+      context: ./backend
     ports:
       - "5050:5050"
     environment:
@@ -35,6 +35,18 @@ services:
       - API_KEY=${API_KEY}
     depends_on:
       - migrator
+    networks:
+      - broccoli_net
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - API_URL=http://backend:5050
+      - PUBLIC_WS_URL=ws://localhost:5050/ws
+      - API_KEY=${API_KEY}
+      - ORIGIN=http://localhost:3000
     networks:
       - broccoli_net
 networks:

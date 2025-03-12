@@ -69,50 +69,54 @@
 	}
 </script>
 
-<h1 class="text-3xl">Broccoli Standups</h1>
-<p>Welcome {data.user.name}</p>
-<div class="flex flex-col">
-	<div>
-		<button class="btn btn-secondary" onclick={openModal}>Create Group</button>
-		<dialog id="create_group" class="modal">
-			<div class="modal-box">
-				<form class="dialog flex flex-col space-y-2" onsubmit={createGroup}>
-					<input name="name" placeholder="Group Name" class="input input-primary" />
-					<br />
-					<button type="submit" class="btn btn-primary">Submit</button>
+<div class="container mx-auto w-full">
+	<h1 class="text-5xl">Broccoli Standups</h1>
+	<br />
+	<p>Welcome {data.user.name}</p>
+	<br />
+	<div class="flex w-full flex-col">
+		<div>
+			<button class="btn btn-secondary" onclick={openModal}>Create Group</button>
+			<dialog id="create_group" class="modal">
+				<div class="modal-box">
+					<form class="dialog flex w-full flex-col space-y-2" onsubmit={createGroup}>
+						<input name="name" placeholder="Group Name" class="input input-primary w-full" />
+						<br />
+						<button type="submit" class="btn btn-primary w-full">Submit</button>
+					</form>
+				</div>
+				<form method="dialog" class="modal-backdrop">
+					<button>close</button>
 				</form>
-			</div>
-			<form method="dialog" class="modal-backdrop">
-				<button>close</button>
-			</form>
-		</dialog>
-	</div>
-	{#if data.groups.length > 0}
-		{#each data.groups as group}
-			<div class="m-5 items-center rounded-md border-2 border-gray-200 p-5">
-				<div class="flex flex-row justify-between">
-					<h2 class="mb-3 text-2xl font-semibold">{group.name}</h2>
-					<div class="flex flex-row space-x-4">
-						<button class="btn btn-primary" onclick={() => startSession(group.id, group.name)}>
-							Start session
-						</button>
-						<form method="POST" onsubmit={inviteUser}>
-							<input
-								type="email"
-								name="email"
-								placeholder="Email"
-								class="input input-bordered input-secondary mr-5"
-							/>
-							<input type="hidden" name="group_id" value={group.id} />
-							<button type="submit" class="btn btn-secondary">Invite</button>
-						</form>
+			</dialog>
+		</div>
+		{#if data?.groups?.length > 0}
+			{#each data.groups as group}
+				<div class="m-5 items-center rounded-md border-2 border-gray-200 p-5">
+					<div class="flex flex-row justify-between">
+						<h2 class="mb-3 text-2xl font-semibold">{group.name}</h2>
+						<div class="flex flex-row space-x-4">
+							<button class="btn btn-primary" onclick={() => startSession(group.id, group.name)}>
+								Start session
+							</button>
+							<form method="POST" onsubmit={inviteUser}>
+								<input
+									type="email"
+									name="email"
+									placeholder="Email"
+									class="input input-bordered input-secondary mr-5"
+								/>
+								<input type="hidden" name="group_id" value={group.id} />
+								<button type="submit" class="btn btn-secondary">Invite</button>
+							</form>
+						</div>
 					</div>
 				</div>
-			</div>
-		{/each}
-	{:else}
-		<h2 class="text-2xl font-semibold">No groups found</h2>
-		<p class="text-gray-500">Create a group to start a session...</p>
-		<p class="text-gray-500">Or ask your group to invite you!</p>
-	{/if}
+			{/each}
+		{:else}
+			<h2 class="text-2xl font-semibold">No groups found</h2>
+			<p class="text-gray-500">Create a group to start a session...</p>
+			<p class="text-gray-500">Or ask your group to invite you!</p>
+		{/if}
+	</div>
 </div>

@@ -7,7 +7,7 @@ func (s *Server) Route() {
 	innerMux.Handle("GET /ws/session/{id}", s.handleSessionWSConnection())
 	innerMux.Handle("POST /session/{id}/shuffle", s.handleShuffleSession())
 	innerMux.Handle("POST /session", s.handlePostSession())
-	innerMux.Handle("GET /groups/user", s.handleGetUserGroups())
+	innerMux.Handle("GET /groups/user/{email}", s.handleGetUserGroups())
 	innerMux.Handle("POST /group/user/add", s.handleAddUserToGroup())
 	innerMux.Handle("DELETE /group", s.handleDeleteGroup())
 	innerMux.Handle("POST /group", s.handlePostGroup())

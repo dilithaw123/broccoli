@@ -10,7 +10,7 @@ import (
 
 func (s *Server) handleGetUserGroups() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		email := r.URL.Query().Get("email")
+		email := r.PathValue("email")
 		groups, err := s.groupService.GetGroupsByEmail(r.Context(), strings.ToLower(email))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
